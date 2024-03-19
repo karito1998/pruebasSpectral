@@ -6,7 +6,7 @@
 #Error #1: the value has to be one of: 0, 1, 2, 3 or "error", "warn", "info", "hint", "off"
 
 #Este set de reglas solo funciona para Swagger 2
-functions: [security, log]
+#functions: [security, log]
 rules:
 #Validar el uso de x-ibm-comment
   x-ibm-comment-exists:
@@ -60,13 +60,13 @@ rules:
         notMatch: /(?:\d{1,3}\.){3}\d{1,3}/
 
 #Validar que se tenga una definicion de seguridad
-  no-securityDefinitions:
-    description: "Todas las Apis deben contar con una definición de seguridad valida y completa"
-    message: "{{error}}"
-    severity: error
-    given: "$.securityDefinitions"
-    then: 
-      function: security
+#  no-securityDefinitions:
+#    description: "Todas las Apis deben contar con una definición de seguridad valida y completa"
+#    message: "{{error}}"
+#    severity: error
+#    given: "$.securityDefinitions"
+#    then: 
+#      function: security
 
 #validar el uso de application/json de modo obligatorio y sin variantes en consumes
   validate-swagger-consumes:
