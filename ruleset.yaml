@@ -1,1 +1,264 @@
+rules:
+  x-ibm-comment-exists:
+    description: "Generar un error si se encuentra la etiqueta x-ibm-comment."
+    given: "$.x-ibm-comment"
+    severity: warn
+    message: "La etiqueta 'x-ibm-comment' NO debe estar presente en el documento" 
+    then:
+      function: falsy
+      
+  comment-exists:
+    description: "Generar un error si se encuentra 'comment'."
+    given: "$..comment"
+    severity: warn
+    message: "La etiqueta 'comment' NO debe estar presente en el documento"
+    then:
+      function: falsy
 
+  console-error-exists:
+    description: "Generar un error si se encuentra 'console.error'."
+    message: "el uso de console.error()' NO debe estar presente en el documento" 
+    severity: error
+    given: "$..*"
+    then:
+      function: pattern
+      functionOptions:
+        notMatch: "console\.error"
+
+  endpoints-exists:
+    description: "Validar que para cada catalogo exista un endpoint"
+    message: "Es necesaria la definición de un endpoint en el catalogo" 
+    severity: error
+    given: "$.x-ibm-configuration.catalogs..properties"
+    then:
+      field: "endpoint"
+      function: truthy
+     
+
+  endpoints-are-defined:
+    description: "Validar que para cada catalogo exista un endpoint con URL y no con IP"
+    message: "El endpoint debe ser una URL valida y no usar IPs -> {{value}}" 
+    severity: error
+    given: "$.x-ibm-configuration.catalogs..endpoint"
+    then:
+      function: pattern
+      functionOptions:
+        notMatch: /(?:\d{1,3}\.){3}\d{1,3}/
+
+  validate-swagger-consumes:
+    description: "la etiqueta 'consumes' solo debe contener el valor `application/json`"
+    severity: error
+    message: "{{description}}: valor encontrado: '{{value}}'"
+    given: $.consumes
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          type: array
+          maxItems: 1 
+          contains:
+            type: string            
+            enum:
+              - application/json
+
+  validate-swagger-produces:
+    description: "la etiqueta 'produces' solo debe contener el valor `application/json`"
+    severity: error
+    message: "{{description}} valor encontrado: '{{value}}'"
+    given: "$.produces"
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          type: array
+          maxItems: 1
+          contains:
+            type: string
+            enum:
+              - application/json
+
+  validate-meta:
+    description: "Se valida que en el meta se encuentren los items obligatorios _requestDateTime, _messageId y _applicationId"
+    severity: error
+    message: "{{description}} valores encontrados: '{{value}}'"
+    given: "$.definitions.meta.required"
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          type: array
+          minItems: 3
+          contains:
+            type: string
+            enum:
+              - _messageId
+              - _requestDateTime
+              - _applicationId
+
+  validate-_messageId-exists:
+    description: "Se valida que en el meta _messageId esté presente"
+    severity: error
+    message: "_messageId es un campo obligatorio en el meta'"
+    given: "$.definitions.meta.properties"
+    then:
+      field: _messageId
+      function: truthy
+
+  validate-_requestDateTime-exists:
+    description: "Se valida que en el meta _requestDateTime esté presente"
+    severity: error
+    message: "_requestDateTime es un campo obligatorio en el meta'"
+    given: "$.definitions.meta.properties"
+    then:
+      field: _requestDateTime
+      function: truthy
+
+  validate-_applicationId-exists:
+    description: "Se valida que en el meta _applicationId esté presente"
+    severity: error
+    message: "_applicationId es un campo obligatorio en el meta'"
+    given: "$.definitions.meta.properties"
+    then:
+      field: _applicationId
+      function: truthy
+
+  validate-requestDateTimeFormat-exists:
+    description: "Se valida que en el meta _requestDateTime.format esté presente"
+    severity: error
+    message: "_requestDateTime es un campo obligatorio en el meta'"
+    given: "$.definitions.meta.properties._requestDateTime"
+    then:
+      field: format
+      function: truthy
+  
+  validate-requestDateTime:
+    description: "Se valida que en el meta se _requestDateTime con un format: date-time"
+    severity: error
+    message: "_requestDateTime debe tener un format: date-time, valor encontrado: '{{value}}'"
+    given: "$.definitions.meta.properties._requestDateTime"
+    then:
+      field: format
+      function: pattern
+      functionOptions:
+        match: "date-time"
+      
+  validate-response-Content-Type-header:
+    description: "Content-Type es un header obligatorio en la respuesta"
+    message: "{{description}}"
+    severity: error
+    given: "$.paths...responses.200.headers"
+    then:
+      field: Content-Type
+      function: truthy
+
+  validate-response-API-Version-header:
+    description: "API-Version es un header obligatorio en la respuesta"
+    message: "{{description}}"
+    severity: error
+    given: "$.paths...responses.200.headers"
+    then:
+      field: API-Version
+      function: truthy
+
+  validate-response-RateLimit-Limit-header:
+    description: "RateLimit-Limit es un header obligatorio en la respuesta"
+    message: "{{description}}"
+    severity: error
+    given: "$.paths...responses.200.headers"
+    then:
+      field: RateLimit-Limit
+      function: truthy
+
+  validate-response-Message-Id-header:
+    description: "Message-Id es un header obligatorio en la respuesta"
+    message: "{{description}}"
+    severity: error
+    given: "$.paths...responses.200.headers"
+    then:
+      field: Message-Id
+      function: truthy
+
+  no-x-headers:
+    message: 'Header `{{value}}` no debe iniciar con "X-".'
+    description: "Las cabeceras no deben iniciar con x-"
+    severity: error
+    given: "$..parameters[?(@.in === 'header')].name"
+    then: 
+      function: pattern
+      functionOptions: 
+        notMatch: "^(x|X)-"
+    
+  path-response-naming-convention:
+    description: "Los campos del response deben ser alfanuméricos y no contener caracteres especiales, ni iniciar con numero"
+    given: $.definitions[*].properties.data.properties
+    severity: error
+    message: "{{description}}, '{{property}}' no sigue la convención de nombres."
+    then:
+      field: "@key"
+      function: pattern
+      functionOptions:
+        match: "^[a-zA-Z][a-zA-Z0-9]*$"
+
+
+  validate-error-response:
+    description: "Validar la respuesta para códigos de estado de error."
+    given: "$.definitions.failure.properties"
+    severity: error
+    message: "La definicion de la respuesta para error no coincide con la estructura esperada (meta y errors)."
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          type: object
+          required:
+            - meta
+            - errors
+  
+  validate-error-property-response:
+    description: "Validar la estructura de objeto error para respuesta."
+    given: "$.definitions.error.properties"
+    severity: error
+    message: "La definicion de la respuesta para error no coincide con la estructura esperada (code y detail)."
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          type: object
+          required:
+            - code
+            - detail
+ 
+  validate-empty-execute:
+    description: "Validar que la propiedad 'execute' está presente pero vacía."
+    given: "$..execute"
+    severity: error
+    message: "La propiedad 'execute' debe estar presente pero vacía."
+    then:
+      field: "@key"
+      function: truthy
+      
+  validate-empty-finally:
+    description: "Validar que la propiedad 'finally' no debe estar presente."
+    given: "$..finally"
+    severity: warn
+    message: "La propiedad 'finally' no debe estar presente."
+    then:
+      function: falsy
+  
+  validate-empty-otherwise:
+    description: "Validar que la propiedad 'otherwise' está presente pero vacía."
+    given: "$..otherwise"
+    severity: error
+    message: "La propiedad 'otherwise' debe estar presente pero vacía."
+    then:
+      field: "@key"
+      function: truthy
+  
+  validate-empty-errors:
+    description: "Validar que la propiedad 'errors' está presente pero vacía."
+    given: "$..errors"
+    severity: error
+    message: "La propiedad 'errors' debe estar presente pero vacía."
+    then:
+      field: "@key"
+      function: truthy
