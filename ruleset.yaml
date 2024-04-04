@@ -23,7 +23,7 @@ rules:
     then:
       function: pattern
       functionOptions:
-        notMatch: "console\.error"
+        notMatch: "console.error"
 
   endpoints-exists:
     description: "Validar que para cada catalogo exista un endpoint"
