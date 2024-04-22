@@ -1,4 +1,7 @@
+#Este set de reglas solo funciona para Swagger 2
+functions: [security]
 rules:
+#Validar el uso de x-ibm-comment
   x-ibm-comment-exists:
     description: "Generar un error si se encuentra la etiqueta x-ibm-comment."
     given: "$.x-ibm-comment"
@@ -6,7 +9,8 @@ rules:
     message: "La etiqueta 'x-ibm-comment' NO debe estar presente en el documento" 
     then:
       function: falsy
-      
+
+#Validar el uso de comment
   comment-exists:
     description: "Generar un error si se encuentra 'comment'."
     given: "$..comment"
@@ -15,6 +19,7 @@ rules:
     then:
       function: falsy
 
+#Validar el uso de console.error
   console-error-exists:
     description: "Generar un error si se encuentra 'console.error'."
     message: "el uso de console.error()' NO debe estar presente en el documento" 
@@ -23,8 +28,9 @@ rules:
     then:
       function: pattern
       functionOptions:
-        notMatch: "console.error"
+        notMatch: "console\.error"
 
+#Validar la existencia de la etiqueta endpoint en todos los catálogos
   endpoints-exists:
     description: "Validar que para cada catalogo exista un endpoint"
     message: "Es necesaria la definición de un endpoint en el catalogo" 
@@ -35,6 +41,7 @@ rules:
       function: truthy
      
 
+#Validar etiqueta endpoint con url y no IP en todos los catalogos
   endpoints-are-defined:
     description: "Validar que para cada catalogo exista un endpoint con URL y no con IP"
     message: "El endpoint debe ser una URL valida y no usar IPs -> {{value}}" 
@@ -45,6 +52,16 @@ rules:
       functionOptions:
         notMatch: /(?:\d{1,3}\.){3}\d{1,3}/
 
+#Validar que se tenga una definicion de seguridad
+  no-securityDefinitions:
+    description: "Todas las Apis deben contar con una definición de seguridad valida y completa"
+    message: "{{error}}"
+    severity: error
+    given: "$.securityDefinitions"
+    then: 
+      function: security
+
+#validar el uso de application/json de modo obligatorio y sin variantes en consumes
   validate-swagger-consumes:
     description: "la etiqueta 'consumes' solo debe contener el valor `application/json`"
     severity: error
@@ -61,6 +78,7 @@ rules:
             enum:
               - application/json
 
+#validar el uso de application/json de modo obligatorio y sin variantes en produces
   validate-swagger-produces:
     description: "la etiqueta 'produces' solo debe contener el valor `application/json`"
     severity: error
@@ -77,6 +95,7 @@ rules:
             enum:
               - application/json
 
+#En el meta debe ser obligatorio el _requestDateTime, _messageId y _applicationId   
   validate-meta:
     description: "Se valida que en el meta se encuentren los items obligatorios _requestDateTime, _messageId y _applicationId"
     severity: error
@@ -95,6 +114,7 @@ rules:
               - _requestDateTime
               - _applicationId
 
+# validar obligatoriedad de _messageId, _requestDateTime, y _applicationId en meta de respuesta
   validate-_messageId-exists:
     description: "Se valida que en el meta _messageId esté presente"
     severity: error
@@ -131,6 +151,7 @@ rules:
       field: format
       function: truthy
   
+#En el meta el _requestDateTime, debe tener un format date-time   
   validate-requestDateTime:
     description: "Se valida que en el meta se _requestDateTime con un format: date-time"
     severity: error
@@ -142,6 +163,7 @@ rules:
       functionOptions:
         match: "date-time"
       
+#validar obligatoriedad de contentype en headers de respuesta
   validate-response-Content-Type-header:
     description: "Content-Type es un header obligatorio en la respuesta"
     message: "{{description}}"
@@ -178,6 +200,7 @@ rules:
       field: Message-Id
       function: truthy
 
+#validar en las cabeceras el uso de prefijo x- (no permitido) y separación con –
   no-x-headers:
     message: 'Header `{{value}}` no debe iniciar con "X-".'
     description: "Las cabeceras no deben iniciar con x-"
@@ -188,6 +211,7 @@ rules:
       functionOptions: 
         notMatch: "^(x|X)-"
     
+#validar que los nombres de los campos del response sean alfanuméricos y que no contengan caracteres especiales, ni inicien con numero
   path-response-naming-convention:
     description: "Los campos del response deben ser alfanuméricos y no contener caracteres especiales, ni iniciar con numero"
     given: $.definitions[*].properties.data.properties
@@ -200,6 +224,7 @@ rules:
         match: "^[a-zA-Z][a-zA-Z0-9]*$"
 
 
+#validar estructura de definición de respuesta fallida
   validate-error-response:
     description: "Validar la respuesta para códigos de estado de error."
     given: "$.definitions.failure.properties"
@@ -227,6 +252,8 @@ rules:
           required:
             - code
             - detail
+      
+#Agregar validacion de execute: [], finally:[], otherwise:[],errors:[]",
  
   validate-empty-execute:
     description: "Validar que la propiedad 'execute' está presente pero vacía."
@@ -262,3 +289,4 @@ rules:
     then:
       field: "@key"
       function: truthy
+      
