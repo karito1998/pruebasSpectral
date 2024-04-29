@@ -1,0 +1,1335 @@
+swagger: '2.0'
+info:
+  title: Currency Exchange Arrangement - Exchange Information
+  version: 1.0.0
+  description: >-
+    Permite realizar la consulta de la información cambiaria de las
+    transacciones de divisas.
+  x-ibm-name: currency-exchange-arrangement-exchange-information
+  contact:
+    name: Developers Support
+    email: soporteapisinternas@bancolombia.com.co
+basePath: >-
+  /v1/operations/product-specific/customer-services/currency-exchange-arrangement
+paths:
+  /retrieveTransactionReasons/typeTransaction/{typeTransactionId}/Channel/{channelId}:
+    get:
+      summary: >-
+        Permite realizar la consulta de los motivos de envío o recepción de
+        divisas.
+      description: >
+        ### Clasificación de la información: Confidencial
+
+        'Permite realizar la consulta de los motivos de envío o recepción de
+        divisas de acuerdo con la naturaleza de la transacción y el canal' 
+      parameters:
+        - name: accept
+          in: header
+          required: false
+          type: string
+          description: >-
+            application/vnd.bancolombia.v4+json, el cual representa el formato
+            de mensajería.
+        - name: message-id
+          in: header
+          required: true
+          type: string
+          description: >-
+            Identificador de transacción. Se recomienda usar un UUID para el
+            valor de este campo Ejemplo: c4e6bd04-5149-11e7-b114-b2f933d5fe66.
+        - name: typeTransactionId
+          type: string
+          required: true
+          in: path
+          description: Naturaleza de la transacción
+          maxLength: 3
+        - name: channelId
+          type: string
+          required: true
+          in: path
+          description: Naturaleza de la transacción
+          maxLength: 3
+      responses:
+        '200':
+          schema:
+            $ref: '#/definitions/reasonsRetrieveResponse'
+          description: Respuesta exitosa
+          x-ibm-languages:
+            description:
+              en: Successful response.
+          headers:
+            Content-Type:
+              type: string
+              description: >-
+                Formato de mensajeria de la API. Ejemplo:
+                application/vnd.bancolombia.v4+json.
+              x-ibm-languages:
+                description:
+                  en: >-
+                    API message format. Example:
+                    application/vnd.bancolombia.v4+json.
+            API-Version:
+              type: string
+              description: 'Version de la API. Ejemplo: 1.0.0.'
+              x-ibm-languages:
+                description:
+                  en: 'API Version. Example: 1.0.0.'
+            RateLimit-Limit:
+              type: number
+              description: Limite de solicitudes por intervalo de tiempo
+              x-ibm-languages:
+                description:
+                  en: Resquest limit per time interval.
+            Message-Id:
+              type: string
+              description: >-
+                Identificador del mensaje o de correlacion usado para la
+                trazabilidad de los llamados a las APIs.
+              x-ibm-languages:
+                description:
+                  en: >-
+                    Message identifier or correlation identifier used for the
+                    traceability of the API calls.
+        '400':
+          $ref: '#/responses/400'
+        '401':
+          $ref: '#/responses/401'
+        '404':
+          $ref: '#/responses/404'
+        '409':
+          $ref: '#/responses/409reasonsRetrieve'
+        '500':
+          $ref: '#/responses/500'
+        '502':
+          $ref: '#/responses/502'
+        '503':
+          $ref: '#/responses/503'
+        '504':
+          $ref: '#/responses/504'
+      security:
+        - clientSecret: []
+          clientId: []
+  /currency-exchange-arrangement-exchange-information/health:
+    head:
+      summary: Operaciones para realizar el monitoreo de la API.
+      description: Operación para monitoreo.
+      responses:
+        '200':
+          description: Respuesta exitosa.
+          x-ibm-languages:
+            description:
+              en: Successful response.
+      security:
+        - clientId: []
+          clientSecret: []
+      tags:
+        - Monitoring
+responses:
+  '400':
+    schema:
+      $ref: '#/definitions/failure'
+    description: Error en la solicitud.
+    x-ibm-languages:
+      description:
+        en: Error in the request.
+    examples:
+      application/vnd.bancolombia.v4+json:
+        meta:
+          _messageId: c4e6bd04-5149-11e7-b114-b2f933d5fe66
+          _requestDateTime: '2017-01-24T05:00:00.000Z'
+          _applicationId: acxff62e-6f12-42de-9012-3e7304418abd
+        status: 400
+        title: Bad Resquest
+        errors:
+          - code: SA404
+            detail: >-
+              La longitud de la parte entera del parametro trackingId es
+              invalida
+    headers:
+      Content-Type:
+        type: string
+        description: >-
+          Formato de mensajería de la API. Ejemplo:
+          application/vnd.bancolombia.v4+json.
+        x-ibm-languages:
+          description:
+            en: 'API message format. Example: application/vnd.bancolombia.v4+json.'
+      API-Version:
+        type: string
+        description: 'Version de la API. Ejemplo: 1.0.0.'
+        x-ibm-languages:
+          description:
+            en: 'API Version. Example: 1.0.0.'
+      RateLimit-Limit:
+        type: number
+        description: Límite de solicitudes por intervalo de tiempo
+        x-ibm-languages:
+          description:
+            en: Resquest limit per time interval.
+      Message-Id:
+        type: string
+        description: >-
+          Identificador del mensaje o de correlación usado para la trazabilidad
+          de los llamados a las APIs.
+        x-ibm-languages:
+          description:
+            en: >-
+              Message identifier or correlation identifier used for the
+              traceability of the API calls.
+  '401':
+    schema:
+      $ref: '#/definitions/failure'
+    description: Credenciales incorrectas.
+    x-ibm-languages:
+      description:
+        en: Incorrect credentials.
+    examples:
+      application/vnd.bancolombia.v4+json:
+        meta:
+          _messageId: c4e6bd04-5149-11e7-b114-b2f933d5fe68
+          _requestDateTime: '2017-01-24T05: 00: 00.000Z'
+          _applicationId: acxff62e-6f12-42de-9012-3e7304418abd
+        status: 401
+        title: Unauthorized
+        errors:
+          - code: SA401
+            detail: El consumidor no tiene acceso a la información solicitada
+    headers:
+      Content-Type:
+        type: string
+        description: >-
+          Formato de mensajería de la API. Ejemplo:
+          application/vnd.bancolombia.v4+json.
+        x-ibm-languages:
+          description:
+            en: 'API message format. Example: application/vnd.bancolombia.v4+json.'
+      API-Version:
+        type: string
+        description: 'Version de la API. Ejemplo: 1.0.0.'
+        x-ibm-languages:
+          description:
+            en: 'API Version. Example: 1.0.0.'
+      RateLimit-Limit:
+        type: number
+        description: Límite de solicitudes por intervalo de tiempo
+        x-ibm-languages:
+          description:
+            en: Resquest limit per time interval.
+      Message-Id:
+        type: string
+        description: >-
+          Identificador del mensaje o de correlación usado para la trazabilidad
+          de los llamados a las APIs.
+        x-ibm-languages:
+          description:
+            en: >-
+              Message identifier or correlation identifier used for the
+              traceability of the API calls.
+  '404':
+    schema:
+      $ref: '#/definitions/failure'
+    description: Recurso no encontrado.
+    x-ibm-languages:
+      description:
+        en: Resource not found.
+    examples:
+      application/vnd.bancolombia.v4+json:
+        meta:
+          _messageId: c4e6bd04-5149-11e7-b114-b2f933d5fe68
+          _requestDateTime: '2017-01-24T05: 00: 00.000Z'
+          _applicationId: acxff62e-6f12-42de-9012-3e7304418abd
+        status: 404
+        title: Not Found
+        errors:
+          - code: BP12700891
+            detail: EL CLIENTE NO TIENE CUENTAS DEL TIPO SOLICITADO
+    headers:
+      Content-Type:
+        type: string
+        description: >-
+          Formato de mensajería de la API. Ejemplo:
+          application/vnd.bancolombia.v4+json.
+        x-ibm-languages:
+          description:
+            en: 'API message format. Example: application/vnd.bancolombia.v4+json.'
+      API-Version:
+        type: string
+        description: 'Version de la API. Ejemplo: 1.0.0.'
+        x-ibm-languages:
+          description:
+            en: 'API Version. Example: 1.0.0.'
+      RateLimit-Limit:
+        type: number
+        description: Límite de solicitudes por intervalo de tiempo
+        x-ibm-languages:
+          description:
+            en: Resquest limit per time interval.
+      Message-Id:
+        type: string
+        description: >-
+          Identificador del mensaje o de correlación usado para la trazabilidad
+          de los llamados a las APIs.
+        x-ibm-languages:
+          description:
+            en: >-
+              Message identifier or correlation identifier used for the
+              traceability of the API calls.
+  '500':
+    schema:
+      $ref: '#/definitions/failure'
+    description: Error interno del servidor.
+    x-ibm-languages:
+      description:
+        en: Internal server error.
+    examples:
+      application/vnd.bancolombia.v4+json:
+        meta:
+          _messageId: c4e6bd04-5149-11e7-b114-b2f933d5fe68
+          _requestDateTime: '2017-01-24T05: 00: 00.000Z'
+          _applicationId: acxff62e-6f12-42de-9012-3e7304418abd
+        status: 500
+        title: Internal Server Error
+        errors:
+          - code: SP500
+            detail: Ha ocurrido un error interno controlado en el servidor.
+    headers:
+      Content-Type:
+        type: string
+        description: >-
+          Formato de mensajería de la API. Ejemplo:
+          application/vnd.bancolombia.v4+json.
+        x-ibm-languages:
+          description:
+            en: 'API message format. Example: application/vnd.bancolombia.v4+json.'
+      API-Version:
+        type: string
+        description: 'Version de la API. Ejemplo: 1.0.0.'
+        x-ibm-languages:
+          description:
+            en: 'API Version. Example: 1.0.0.'
+      RateLimit-Limit:
+        type: number
+        description: Límite de solicitudes por intervalo de tiempo
+        x-ibm-languages:
+          description:
+            en: Resquest limit per time interval.
+      Message-Id:
+        type: string
+        description: >-
+          Identificador del mensaje o de correlación usado para la trazabilidad
+          de los llamados a las APIs.
+        x-ibm-languages:
+          description:
+            en: >-
+              Message identifier or correlation identifier used for the
+              traceability of the API calls.
+  '502':
+    schema:
+      $ref: '#/definitions/failure'
+    description: Error en la respuesta del proveedor del servicio.
+    x-ibm-languages:
+      description:
+        en: Error in the service provider response.
+    examples:
+      application/vnd.bancolombia.v4+json:
+        meta:
+          _messageId: c4e6bd04-5149-11e7-b114-b2f933d5fe68
+          _requestDateTime: '2017-01-24T05: 00: 00.000Z'
+          _applicationId: acxff62e-6f12-42de-9012-3e7304418abd
+        status: 502
+        title: Bad Gateway
+        errors:
+          - code: SP502
+            detail: El mensaje de respuesta recibido del servidor es inválido
+    headers:
+      Content-Type:
+        type: string
+        description: >-
+          Formato de mensajería de la API. Ejemplo:
+          application/vnd.bancolombia.v4+json.
+        x-ibm-languages:
+          description:
+            en: 'API message format. Example: application/vnd.bancolombia.v4+json.'
+      API-Version:
+        type: string
+        description: 'Version de la API. Ejemplo: 1.0.0.'
+        x-ibm-languages:
+          description:
+            en: 'API Version. Example: 1.0.0.'
+      RateLimit-Limit:
+        type: number
+        description: Límite de solicitudes por intervalo de tiempo
+        x-ibm-languages:
+          description:
+            en: Resquest limit per time interval.
+      Message-Id:
+        type: string
+        description: >-
+          Identificador del mensaje o de correlación usado para la trazabilidad
+          de los llamados a las APIs.
+        x-ibm-languages:
+          description:
+            en: >-
+              Message identifier or correlation identifier used for the
+              traceability of the API calls.
+  '503':
+    schema:
+      $ref: '#/definitions/failure'
+    description: Servicio no disponible.
+    x-ibm-languages:
+      description:
+        en: Service unavailable.
+    examples:
+      application/vnd.bancolombia.v4+json:
+        meta:
+          _messageId: c4e6bd04-5149-11e7-b114-b2f933d5fe68
+          _requestDateTime: '2017-01-24T05: 00: 00.000Z'
+          _applicationId: acxff62e-6f12-42de-9012-3e7304418abd
+        status: 503
+        title: Service Unavailable
+        errors:
+          - code: SP503
+            detail: >-
+              Por problemas tecnicos su transaccion no pudo atenderse en estos
+              momentos, por favor intente mas tarde
+    headers:
+      Content-Type:
+        type: string
+        description: >-
+          Formato de mensajería de la API. Ejemplo:
+          application/vnd.bancolombia.v4+json.
+        x-ibm-languages:
+          description:
+            en: 'API message format. Example: application/vnd.bancolombia.v4+json.'
+      API-Version:
+        type: string
+        description: 'Version de la API. Ejemplo: 1.0.0.'
+        x-ibm-languages:
+          description:
+            en: 'API Version. Example: 1.0.0.'
+      RateLimit-Limit:
+        type: number
+        description: Límite de solicitudes por intervalo de tiempo
+        x-ibm-languages:
+          description:
+            en: Resquest limit per time interval.
+      Message-Id:
+        type: string
+        description: >-
+          Identificador del mensaje o de correlación usado para la trazabilidad
+          de los llamados a las APIs.
+        x-ibm-languages:
+          description:
+            en: >-
+              Message identifier or correlation identifier used for the
+              traceability of the API calls.
+  '504':
+    schema:
+      $ref: '#/definitions/failure'
+    description: Tiempo de respuesta del proveedor del servicio excedido.
+    x-ibm-languages:
+      description:
+        en: Service provider response time exceeded.
+    examples:
+      application/vnd.bancolombia.v4+json:
+        meta:
+          _messageId: c4e6bd04-5149-11e7-b114-b2f933d5fe68
+          _requestDateTime: '2017-01-24T05: 00: 00.000Z'
+          _applicationId: acxff62e-6f12-42de-9012-3e7304418abd
+        status: 504
+        title: Gateway Timeout
+        errors:
+          - code: SP504
+            detail: El proveedor no respondió en tiempo esperado
+    headers:
+      Content-Type:
+        type: string
+        description: >-
+          Formato de mensajería de la API. Ejemplo:
+          application/vnd.bancolombia.v4+json.
+        x-ibm-languages:
+          description:
+            en: 'API message format. Example: application/vnd.bancolombia.v4+json.'
+      API-Version:
+        type: string
+        description: 'Version de la API. Ejemplo: 1.0.0.'
+        x-ibm-languages:
+          description:
+            en: 'API Version. Example: 1.0.0.'
+      RateLimit-Limit:
+        type: number
+        description: Límite de solicitudes por intervalo de tiempo
+        x-ibm-languages:
+          description:
+            en: Resquest limit per time interval.
+      Message-Id:
+        type: string
+        description: >-
+          Identificador del mensaje o de correlación usado para la trazabilidad
+          de los llamados a las APIs.
+        x-ibm-languages:
+          description:
+            en: >-
+              Message identifier or correlation identifier used for the
+              traceability of the API calls.
+  409reasonsRetrieve:
+    schema:
+      $ref: '#/definitions/failure'
+    headers:
+      Content-Type:
+        type: string
+        description: >-
+          Formato de mensajería de la API. Ejemplo:
+          application/vnd.bancolombia.v4+json.
+        x-ibm-languages:
+          description:
+            en: 'API message format. Example: application/vnd.bancolombia.v4+json.'
+      API-Version:
+        type: string
+        description: 'Version de la API. Ejemplo: 1.0.0.'
+        x-ibm-languages:
+          description:
+            en: 'API Version. Example: 1.0.0.'
+      RateLimit-Limit:
+        type: number
+        description: Límite de solicitudes por intervalo de tiempo
+        x-ibm-languages:
+          description:
+            en: Resquest limit per time interval.
+      Message-Id:
+        type: string
+        description: >-
+          Identificador del mensaje o de correlación usado para la trazabilidad
+          de los llamados a las APIs.
+        x-ibm-languages:
+          description:
+            en: >-
+              Message identifier or correlation identifier used for the
+              traceability of the API calls.
+    x-ibm-languages:
+      description:
+        en: Resource state has conflicts with data of the request.
+    examples:
+      application/vnd.bancolombia.v4+json:
+        meta:
+          _messageId: c4e6bd04-5149-11e7-b114-b2f933d5fe68
+          _requestDateTime: '2017-01-24T05: 00: 00.000Z'
+          _applicationId: acxff62e-6f12-42de-9012-3e7304418abd
+        status: 409
+        title: Conflict
+        errors:
+          - code: BP12700871
+            detail: EL BENEFICIARIO SE ENCUENTRA EN LISTA DE CONTROL
+    description: >
+      El estado del recurso presenta conflictos con los datos de la solicitud.
+
+      ### Códigos de error
+
+      Listado de códigos de error
+
+      | code | detail |
+
+      | --------------- | --------------- |
+
+      | BP12700858 | EL NUMERO Y TIPO DE DOCUMENTO NO PERTENECE A UN CLIENTE
+      BANCOLOMBIA O DE COMERCIO INTERNACIONAL BANCOLOMBIA |
+
+      | BP12700871 | EL BENEFICIARIO SE ENCUENTRA EN LISTA DE CONTROL |
+
+      | BP12700865 | ERROR EN EL REVERSO DE LA DECLARACION DE CAMBIO |
+definitions:
+  message:
+    type: object
+    properties:
+      informative:
+        type: string
+        maxLength: 300
+        example: ''
+        description: Mensaje informativo con observaciones generales de la consulta
+      support:
+        type: string
+        maxLength: 300
+        example: ''
+        description: Mensaje de ayuda par orientar al usuario en la experiencia
+      disabledForm:
+        type: string
+        maxLength: 600
+        example: ''
+        description: Mensaje informativo de formulario inhabilitado para el cliente.
+  reason:
+    type: object
+    properties:
+      code:
+        type: string
+        maxLength: 2
+        example: ''
+        description: Código del motivo de transacción
+      description:
+        type: string
+        maxLength: 60
+        example: ''
+        description: Descripción del motivo de transacción
+      form:
+        type: string
+        maxLength: 3
+        example: IDB
+        description: Formulario asociado al motivo de transacción.
+  reasons:
+    description: Datos del beneficiario
+    type: array
+    uniqueItems: true
+    items:
+      $ref: '#/definitions/reason'
+  reasonsRetrieveResponse:
+    type: object
+    required:
+      - meta
+      - data
+    properties:
+      meta:
+        $ref: '#/definitions/meta'
+      data:
+        type: object
+        required:
+          - reasons
+        properties:
+          message:
+            $ref: '#/definitions/message'
+          reasons:
+            $ref: '#/definitions/reasons'
+  meta:
+    description: Datos de trazabilidad e informacion técnica del mensaje.
+    type: object
+    required:
+      - _messageId
+      - _requestDateTime
+      - _applicationId
+    properties:
+      _messageId:
+        type: string
+        example: c4e6bd04-5149-11e7-b114-b2f933d5fe66
+      _requestDateTime:
+        type: string
+        format: date-time
+        example: '2017-01-24T05:00:00.000Z'
+      _applicationId:
+        type: string
+        example: acxff62e-6f12-42de-9012-3e7304418abd
+  objectHeader:
+    description: The type and id for each data.
+    type: object
+    required:
+      - type
+      - id
+    properties:
+      type:
+        type: string
+        example: Customer-Corporate
+      id:
+        type: string
+        example: '1'
+  topLevelLinks:
+    description: >-
+      Objeto que contiene los enlaces relacionados al mensaje de respuesta,
+      puede contener los enlaces para realizar una paginación.
+    type: object
+    allOf:
+      - $ref: '#/definitions/pagination'
+  pagination:
+    type: object
+    properties:
+      first:
+        description: the first page of data
+        type: string
+        format: uri
+      last:
+        description: the last page of data
+        type: string
+        format: uri
+      prev:
+        description: the previous page of data
+        type: string
+        format: uri
+      next:
+        description: the next page of data
+        type: string
+        format: uri
+  failure:
+    type: object
+    description: Mensaje de respuesta cuando ocurre un error.
+    required:
+      - meta
+      - errors
+    properties:
+      meta:
+        $ref: '#/definitions/meta'
+      status:
+        type: number
+        description: >-
+          Codigo de estado HTTP (status code) asociado al mensaje de error de la
+          respuesta del llamado a la API.
+        example: 404
+      title:
+        type: string
+        description: >-
+          Titulo asociado al codigo de estado HTTP (status code) asociado al
+          mensaje de error de la respuesta del llamado a la API.
+        example: Not Found
+      errors:
+        type: array
+        description: Lista de errores detectados
+        uniqueItems: true
+        items:
+          $ref: '#/definitions/error'
+  error:
+    type: object
+    required:
+      - code
+      - detail
+    properties:
+      code:
+        description: An application-specific error code, expressed as a string value.
+        type: string
+        example: BP404
+      detail:
+        description: >-
+          A human-readable explanation specific to this occurrence of the
+          problem.
+        type: string
+        example: Requested resource could not be found
+schemes:
+  - https
+consumes:
+  - application/vnd.bancolombia.v4+json
+host: $(catalog.host)
+produces:
+  - application/vnd.bancolombia.v4+json
+securityDefinitions:
+  clientSecret:
+    type: apiKey
+    description: Secreto de la aplicación consumidora o client_secret
+    in: header
+    name: Client-Secret
+    x-key-type: client_secret
+  clientId:
+    type: apiKey
+    description: Identificación de la aplicación consumidora, apiKey o client_id
+    in: header
+    name: Client-Id
+    x-key-type: client_id
+tags:
+  - name: Monitoring
+    description: Operaciones para realizar el monitoreo de la API
+x-ibm-configuration:
+  testable: true
+  enforced: true
+  cors:
+    enabled: true
+  phase: realized
+  properties:
+    endpoint:
+      value: ''
+      description: ''
+      encoded: false
+    profiletls:
+      value: ''
+      description: ''
+      encoded: false
+    catalogName:
+      value: ''
+      description: ''
+      encoded: false
+    hostName:
+      value: ''
+      encoded: false
+      description: ''
+    target-url:
+      value: http://example.com/operation-name
+      description: The URL of the target service
+      encoded: false
+  catalogs:
+    development:
+      properties:
+        catalogName: development
+        profiletls: apic-tls-profile-comex-on-premises
+        endpoint: https://10.8.74.102:3300/ESB/SOAP/Default
+        hostName: gw-comex.apps.ocpdes.ambientesbc.lab
+    production:
+      properties:
+        catalogName: production
+        profiletls: apic-tls-profile-comex-on-premises
+        endpoint: https://esbpro.bancolombia.corp:3300/ESB/SOAP/Default
+        hostName: gw-comex.apps.ocpprod.bancolombia.corp
+    testing:
+      properties:
+        catalogName: testing
+        profiletls: apic-tls-profile-comex-on-premises
+        endpoint: https://10.8.74.103:3300/ESB/SOAP/Default
+        hostName: gw-comex.apps.ocpqa.ambientesbc.lab
+    sb:
+      properties:
+        catalogName: Sandbox
+        profiletls: apic-tls-profile-cluster-eks-integracion-sandbox
+        endpoint:  https://integracion-int-qa.apps.ambientesbc.lab/
+        hostName: gw-sandbox-qa.apps.ambientesbc.lab
+  type: rest
+  gateway: datapower-api-gateway
+  assembly:
+    execute:
+      - gatewayscript:
+          version: 2.0.0
+          title: validateHostHeader
+          source: |-
+            validateHostHeader();
+            function validateHostHeader() {
+                var validHostName = context.get('api.properties.hostName');
+                var headerHost = context.get('request.headers.host');
+                
+                if (headerHost != validHostName) {
+                    context.reject('ParametersException', 'Header Host inválido'); 
+                    context.message.statusCode = 400
+                }
+                
+            }
+      - gatewayscript:
+          version: 2.0.0
+          title: init-meta-and-headers
+          source: "var messageId = context.get('request.headers.message-id') || undefined;\r\nvar messageIdValid = false;\r\n\r\nmessageId ? messageIdValid = isMessageIdValid('messageId', messageId, 5, 40) : throwError('ParametersException', 'header message-id requerido', '400');\r\n\r\n\r\n\r\nsetRequestDateToContextVariable();\r\nfilterHeaders();\r\ninitMeta();\r\ngetConsumer();\r\n\r\nfunction isMessageIdValid(name, value, minLength, maxLength) {\r\n    var message = null;\r\n    var patternStr = /^[0-9a-zA-Z-]+$/;\r\n    if (value && value != undefined) {\r\n        if (value.length < minLength || value.length > maxLength) {\r\n            message = 'Longitud del parámetro ' + name + ' inválida';\r\n        } else if (!patternStr.test(value)) {\r\n            message = 'Parámetro ' + name + ' inválido';\r\n        }\r\n    }\r\n    return message ? throwError('ParametersException', message, '400') : context.set('ctx.messageId', messageId);\r\n}\r\n\r\nfunction initMeta() {\r\n    let meta = {\r\n        _messageId: messageIdValid ? messageId : '',\r\n        _requestDateTime: context.get('ctx.requestDate'),\r\n        _applicationId: context.get('client.app.id')\r\n    };\r\n    context.set('ctx.meta', meta);\r\n}\r\n\r\nfunction setRequestDateToContextVariable() {\r\n    let requestDate = context.get('ctx.requestDate');\r\n    return requestDate ? context.set('ctx.requestDate', new Date(requestDate).toISOString()) : context.set('ctx.requestDate', new Date(new Date().getTime() - 3600 * 5000).toISOString());\r\n}\r\n\r\nfunction getConsumer() {\r\n    let appName = context.get('client.app.name').toUpperCase();\r\n    appName = appName.trim();\r\n    try {\r\n        let name = appName.split('-');\r\n        let systemId = name[1].toUpperCase();\r\n        let nombre = name[0];\r\n        if (systemId) {\r\n            context.set('ctx.systemId', systemId);\r\n            context.set('ctx.appName', nombre);\r\n        } else {\r\n            throwError('ParametersException', 'Identificación de aplicación inválido', '409');\r\n        }\r\n    } catch (exception) {\r\n        throwError('ParametersException', 'Identificación de aplicación inválido', '409');\r\n    }\r\n}\r\n\r\nfunction filterHeaders() {\r\n    let header_meta = require('header-metadata');\r\n    header_meta.current.remove('X-Backside-Transport');\r\n    header_meta.current.headers = {\r\n        'Content-type': 'application/vnd.bancolombia.v4+json; charset=utf-8',\r\n        'API-Version': context.get('api.version'),\r\n        'Message-id': context.get('request.headers.message-id') || '',\r\n        'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',\r\n        'X-Frame-Options': 'DENY',\r\n        'Content-Security-Policy': 'default-src \\'self\\' *.bancolombia.com',\r\n        'X-Content-Type-Options': 'nosniff',\r\n        'Cache-Control': 'private, no-cache, no-store, max-age=0, no-transfor',\r\n        Pragma: 'no-cache',\r\n        Expires: '0'\r\n    };\r\n    context.set('header_meta', header_meta.current.headers);\r\n}\r\n\r\nfunction throwError(errorName, description, code) {\r\n   context.reject(errorName, description); \r\n   context.message.statusCode = code;\r\n}"
+      - switch:
+          version: 2.0.0
+          title: switch
+          case:
+            - condition: >-
+                ($httpVerb() = 'GET' and $operationPath() =
+                '/retrieveTransactionReasons/typeTransaction/{typeTransactionId}/Channel/{channelId}')
+              execute:
+                - gatewayscript:
+                    version: 2.0.0
+                    title: Validate Request
+                    source: "var parameters = context.get('request.parameters');\r\nvar env = context.get(\"env.path\");\r\n\r\nvar typeTransactionId = parameters.typeTransactionId.values[0];\r\nvar channelId = parameters.channelId.values[0];\r\n\r\n\r\nvalidateType(\"typeTransactionId\",typeTransactionId,true );\r\n\r\n\r\nvalidateString(\"channelId\",channelId,3,3,true );\r\n\r\nconst request ={\r\n    typeTransactionId: typeTransactionId,\r\n    channelId: channelId\r\n};\r\ncontext.set('ctx.request', request);\r\n\r\n//context.set(\"message.body\", endpointBack);\r\nif (env === 'sb') {\r\n    context.set('message.headers.Origin', context.get('request.path'));\r\n    context.set('message.headers.Client-Id', context.get('client.app.id'));\r\n    context.set('message.headers.Content-Type', 'application/vnd.bancolombia.v4+json');\r\n    context.set('message.headers.x-api-sandbox', context.get('api.name'));\r\n}\r\n\r\n\r\nfunction validateType(name, value, required = false) {\r\n    var message;\r\n    const type = [\"CRE\", \"DEB\"];\r\n    if (value && value != 'undefined' && value != null) {\r\n        if (isNaN(value)) {\r\n            value = value.trim();\r\n        }\r\n        if (!type.includes(value)) {\r\n            message = name + ' contiene un valor inválido.';\r\n        }\r\n    } else if (required) {\r\n        message = 'Uno de los campos requerido no fue recibido.';\r\n    }\r\n    if (message) {\r\n        throwError('ParametersException', message, '400');\r\n        return false;\r\n    }\r\n    return true;\r\n}\r\n\r\nfunction validateString(name, value, minLength = 0, maxLength = 256, required = false) {\r\n    var message;\r\n    var patternStr = /^[0-9a-zA-Z\\s]+$/;\r\n    if (value && value != 'undefined' && value != null) {\r\n        if (isNaN(value)) {\r\n            value = value.trim();\r\n        }\r\n        if (value.length < minLength || value.length > maxLength) {\r\n            message = name + ' no cumple la longitud esperada.';\r\n        } else if (!patternStr.test(value)) {\r\n            message = 'Formato del parámetro ' + name + ' inválido';\r\n        }\r\n    } else if (required) {\r\n        message = 'Uno de los campos requerido no fue recibido.';\r\n    }\r\n    if (message) {\r\n        throwError('ParametersException', message, '400');\r\n        return false;\r\n    }\r\n    return true;\r\n}\r\n\r\n//Lanza excepciones y guarda el codigo y la descripcion del error en una variable de contexto \r\nfunction throwError(errorName, description, code) {\r\n   context.reject(errorName, description); \r\n   context.message.statusCode = code;\r\n}\r\n    \r\n "
+                - switch:
+                    version: 2.0.0
+                    title: switch
+                    case:
+                      - condition: env.path = "sb"
+                        execute:
+                          - invoke:
+                              version: 2.2.0
+                              title: invoke
+                              backend-type: detect
+                              header-control:
+                                type: blocklist
+                                values: []
+                              parameter-control:
+                                type: allowlist
+                                values: []
+                              http-version: HTTP/1.1
+                              timeout: 5
+                              verb: keep
+                              chunked-uploads: true
+                              persistent-connection: true
+                              cache-response: protocol
+                              cache-ttl: 900
+                              stop-on-error:
+                                - ConnectionError
+                              graphql-send-type: detect
+                              tls-profile: $(profiletls):1.0.0
+                              websocket-upgrade: false
+                              target-url: >-
+                                $(endpoint)$(api.root)$(api.operation.path)
+                      - otherwise:
+                          - map:
+                              version: 2.0.0
+                              title: map
+                              inputs:
+                                input:
+                                  schema:
+                                    type: object
+                                    properties:
+                                      typeTransactionId:
+                                        type: string
+                                        name: typeTransactionId
+                                      channelId:
+                                        type: string
+                                        name: channelId
+                                  variable: ctx.request
+                              outputs:
+                                output:
+                                  schema:
+                                    type: object
+                                    properties:
+                                      Envelope:
+                                        type: object
+                                        properties:
+                                          Header:
+                                            type: object
+                                            properties:
+                                              requestHeader:
+                                                type: object
+                                                properties:
+                                                  systemId:
+                                                    type: string
+                                                    xml:
+                                                      namespace: ''
+                                                    name: systemId
+                                                  messageId:
+                                                    type: string
+                                                    xml:
+                                                      namespace: ''
+                                                    name: messageId
+                                                  timestamp:
+                                                    type: string
+                                                    xml:
+                                                      namespace: ''
+                                                    name: timestamp
+                                                  userId:
+                                                    type: object
+                                                    properties:
+                                                      userName:
+                                                        type: string
+                                                        xml:
+                                                          namespace: ''
+                                                        name: userName
+                                                    xml:
+                                                      namespace: ''
+                                                    name: userId
+                                                  destination:
+                                                    type: object
+                                                    properties:
+                                                      name:
+                                                        type: string
+                                                        xml:
+                                                          namespace: ''
+                                                        name: name
+                                                      namespace:
+                                                        type: string
+                                                        xml:
+                                                          namespace: ''
+                                                        name: namespace
+                                                      operation:
+                                                        type: string
+                                                        xml:
+                                                          namespace: ''
+                                                        name: operation
+                                                    xml:
+                                                      namespace: ''
+                                                    name: destination
+                                                xml:
+                                                  namespace: >-
+                                                    http://grupobancolombia.com/ents/SOI/MessageFormat/V2.1
+                                                  prefix: v2
+                                                name: requestHeader
+                                            name: Header
+                                          Body:
+                                            type: object
+                                            properties:
+                                              consultarMotivos:
+                                                type: object
+                                                properties:
+                                                  transaccion:
+                                                    type: object
+                                                    properties:
+                                                      tipo:
+                                                        type: string
+                                                        xml:
+                                                          namespace: ''
+                                                        name: tipo
+                                                    xml:
+                                                      namespace: ''
+                                                    name: transaccion
+                                                  canal:
+                                                    type: object
+                                                    properties:
+                                                      codigo:
+                                                        type: string
+                                                        xml:
+                                                          namespace: ''
+                                                        name: codigo
+                                                    xml:
+                                                      namespace: ''
+                                                    name: canal
+                                                xml:
+                                                  namespace: >-
+                                                    http://grupobancolombia.com/intf/Producto/MonedaExtranjera/ComercioExterior/ConsultaMotivosTransaccion/V1.0
+                                                  prefix: v1
+                                                name: consultarMotivos
+                                            name: Body
+                                        xml:
+                                          namespace: >-
+                                            http://schemas.xmlsoap.org/soap/envelope/
+                                          prefix: soapenv
+                                        name: Envelope
+                                    xml:
+                                      namespace: ''
+                                    example: >-
+                                      <soapenv:Envelope
+                                      xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                                      xmlns:v2="http://grupobancolombia.com/ents/SOI/MessageFormat/V2.1"
+                                      xmlns:v1="http://grupobancolombia.com/intf/Producto/MonedaExtranjera/ComercioExterior/ConsultaMotivosTransaccion/V1.0">
+
+                                         <soapenv:Header>
+
+                                            <v2:requestHeader>
+
+                                               <systemId>PRODUCTORCONSUMIDOR</systemId>
+
+                                               <messageId>1c1a000021600199</messageId>
+
+                                               <!--Optional:-->
+
+                                               <timestamp>2023-05-31T14:24:40.881Z</timestamp>
+
+                                               <userId>
+
+                                                  <userName>PRODUCTORCONSUMIDOR</userName>
+
+                                               </userId>
+
+                                               <!--Optional:-->
+
+                                               <destination>
+
+                                                  <!--Optional:-->
+
+                                                  <name>ConsultaMotivosTransaccion</name>
+
+                                                  <!--Optional:-->
+
+                                                  <namespace>http://grupobancolombia.com/intf/Producto/MonedaExtranjera/ComercioExterior/ConsultaMotivosTransaccion/V1.0</namespace>
+
+                                                  <!--Optional:-->
+
+                                                  <operation>consultarMotivos</operation>
+
+                                               </destination>
+
+                                            </v2:requestHeader>
+
+                                         </soapenv:Header>
+
+                                         <soapenv:Body>
+
+                                            <v1:consultarMotivos>
+
+                                               <transaccion>
+
+                                                  <tipo>DEB</tipo>
+
+                                               </transaccion>
+
+                                               <canal>
+
+                                                  <codigo>SVP</codigo>
+
+                                               </canal>
+
+                                            </v1:consultarMotivos>
+
+                                         </soapenv:Body>
+
+                                      </soapenv:Envelope>
+                                  variable: message.body
+                                  content: application/xml
+                              actions:
+                                - set: >-
+                                    output.Envelope.Body.consultarMotivos.transaccion.tipo
+                                  from: input.typeTransactionId
+                                - set: >-
+                                    output.Envelope.Body.consultarMotivos.canal.codigo
+                                  from: input.channelId
+                                - set: >-
+                                    output.Envelope.Header.requestHeader.systemId
+                                  default: $(ctx.systemId)
+                                - set: >-
+                                    output.Envelope.Header.requestHeader.messageId
+                                  default: $(ctx.messageId)
+                                - set: >-
+                                    output.Envelope.Header.requestHeader.timestamp
+                                  default: $(ctx.requestDate)
+                                - set: >-
+                                    output.Envelope.Header.requestHeader.userId.userName
+                                  default: $(ctx.systemId)
+                                - set: >-
+                                    output.Envelope.Header.requestHeader.destination.name
+                                  default: ConsultaMotivosTransaccion
+                                - set: >-
+                                    output.Envelope.Header.requestHeader.destination.namespace
+                                  default: >-
+                                    http://grupobancolombia.com/intf/Producto/MonedaExtranjera/ComercioExterior/ConsultaMotivosTransaccion/V1.0
+                                - set: >-
+                                    output.Envelope.Header.requestHeader.destination.operation
+                                  default: consultarMotivos
+                              options:
+                                mapEmulateV4EmptyJSONObject: false
+                                mapEmulateV4DefaultRequiredProps: false
+                                mapEnablePostProcessingJSON: false
+                                mapReferenceLimit: 1
+                                mapParseXMLOutput: true
+                                mapResolveApicVariables: true
+                          - invoke:
+                              version: 2.2.0
+                              title: invoke
+                              backend-type: detect
+                              header-control:
+                                type: blocklist
+                                values: []
+                              parameter-control:
+                                type: allowlist
+                                values: []
+                              http-version: HTTP/1.1
+                              timeout: 7
+                              verb: POST
+                              chunked-uploads: true
+                              persistent-connection: true
+                              cache-response: protocol
+                              cache-ttl: 900
+                              graphql-send-type: detect
+                              tls-profile: $(profiletls):1.0.0
+                              websocket-upgrade: false
+                              target-url: $(endpoint)
+                              stop-on-error:
+                                - ConnectionError
+                          - gatewayscript:
+                              version: 2.0.0
+                              title: validateResponse
+                              source: "const soapenv = 'http://schemas.xmlsoap.org/soap/envelope/';\r\n\r\n//cabeceras de respuesta\r\nlet header_meta = require(\"header-metadata\");\r\nheader_meta.current.headers = context.get(\"header_meta\");\r\n\r\n//transformacion\r\ncontext.message.body.readAsXML(function (error, xml) {\r\n    if (error) {\r\n        throwError('SystemException', 'Error leyendo la respuesta del proveedor', 500);    \r\n    }  else {\r\n        let xmlDocument = xml.item(0);\r\n        let header = xmlDocument.getElementsByTagNameNS(soapenv, 'Header').item(0);\r\n        // solo hay un header por eso el item(0)\r\n        let payload = xmlDocument.getElementsByTagNameNS(soapenv, 'Body').item(0);\r\n        // solo hay un body por eso el item(0)\r\n        // Accedemos a la etiqueta bussinesException para posterionmente validar los errores...\r\n        let codebusiness = '';\r\n        let descbusiness = '';\r\n        let genericException =  '';\r\n        var responseStatus = obtenerElemento(header, 'responseStatus', 'String');\r\n                // var statusCode = obtenerElemento(responseStatus, 'statusCode', 'String');\r\n        if (responseStatus) {\r\n            if (responseStatus == '') {\r\n                var faultstring = obtenerElemento(payload, 'faultstring', 'String');\r\n                var vec_faultstr = faultstring.split(' ');\r\n                var codesystem = vec_faultstr[0];\r\n                var descsystem = obtenerElemento(payload, 'detail', 'String');\r\n                                               throwError('ConnectionError', descsystem, codesystem); // pendiente de validar con otros errores\r\n            } else if (responseStatus != 'Success') {\r\n                genericException = payload.getElementsByTagName('genericException').item(0);\r\n                                if (genericException) {  // pendiente de realizar \r\n                    codebusiness = obtenerElemento(genericException, 'code', 'String');\r\n                    descbusiness = obtenerElemento(genericException, 'description', 'String');            \r\n                    // Validamos si el tag code y description vienen vacios o nulos, esto evita de que el msg de error se vaya por la po\r\n                    \r\n                                     if (typeof codebusiness === 'undefined' || codebusiness === '' || typeof descbusiness === 'undefined' || descbusiness === '') {\r\n                        throwError('DefaultException', '', '');\r\n                    }    \r\n                    else\r\n                        throwError('BusinessException', descbusiness, codebusiness);\r\n                    }\r\n                    \r\n            } else {\r\n                procesarResponse(payload);\r\n            }\r\n        }}\r\n    });\r\n\r\nfunction procesarResponse(payload) {\r\n    let meta = context.get('ctx.meta');\r\n    //objeto data\r\n    //objeto message\r\n    let mensaje = payload.getElementsByTagName('mensaje').item(0);\r\n    let informative = obtenerElemento(mensaje, 'informativo', 'String');\r\n    let support = obtenerElemento(mensaje, 'soporte', 'String');\r\n    let disabledForm = obtenerElemento(mensaje, 'formularioInhabilitado', 'String'); \r\n    //cierra message\r\n    //objeto reasons\r\n    let motivos = payload.getElementsByTagName('motivos').item(0);\r\n    let motivosSize = payload.getElementsByTagName('motivo').length;\r\n    let reasons=[];\r\n\r\n    if (motivosSize>=1){\r\n        for (var i=0; i<motivosSize; i++){\r\n            let motivo = motivos.getElementsByTagName('motivo').item(i);\r\n            let code = obtenerElemento(motivo, 'codigo', 'String');\r\n            let description = obtenerElemento(motivo, 'descripcion', 'String'); \r\n            let form = obtenerElemento(motivo, 'formulario', 'String');\r\n            reasons.push({code, description, form });\r\n        }\r\n    }\r\n    // plans.push(currentPlanResponse);     \r\n    \r\n    let responseBody = {\r\n        meta: meta,\r\n        data: {\r\n            message: {\r\n                informative, support, disabledForm\r\n            },\r\n            reasons:reasons\r\n        }\r\n    };\r\n    \r\n    context.message.body.write(responseBody);\r\n}\r\n\r\nfunction obtenerElemento(objeto, nombrevalor, tipodato) {\r\n    var valor = null;\r\n    try {\r\n        valor = objeto.getElementsByTagName(nombrevalor).item(0).textContent.trim();\r\n    } catch (e) {\r\n        console.alert('No se pudo obtener la etiqueta: ' + nombrevalor);\r\n    }\r\n    if (valor) {\r\n        if (tipodato === 'String')\r\n            return valor;\r\n        else if (tipodato === 'Float')\r\n            return Number.parseFloat(valor);\r\n        else if (tipodato === 'Integer')\r\n            return Number.parseInt(valor);\r\n        else if (tipodato === 'Boolean')\r\n            return valor === 'true';\r\n    } else\r\n        return valor;\r\n}\r\n\r\nfunction throwError(errorName, description, code) {\r\n    context.reject(errorName, description); \r\n    context.set('statuscode', code);\r\n    // context.message.statusCode = code;\r\n}\r\n"
+            - condition: >-
+                ($httpVerb() = 'HEAD' and $operationPath() =
+                '/currency-exchange-arrangement-exchange-information/health')
+              execute:
+                - gatewayscript:
+                    version: 2.0.0
+                    title: set-headers
+                    source: "context.message.header.set('Content-Type', 'application/json');\r\ncontext.message.header.set('API-Version', context.get('api.version'));\r\ncontext.message.header.set('Message-id', context.get('request.headers.message-id'));\r\ncontext.message.header.set('X-Content-Type-Options', 'nosniff');\r\ncontext.message.header.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');\r\ncontext.message.header.set('X-Frame-Options', 'DENY');\r\ncontext.message.header.set('Cache-Control', 'private, no-cache, no-store, max-age=0, no-transform');\r\ncontext.message.header.set('Pragma', 'no-cache');\r\ncontext.message.header.set('Expires', '0');\r\ncontext.message.header.set('Content-Security-Policy', \"default-src 'self' *.bancolombia.com\");"
+    catch:
+      - errors:
+          - ParametersException
+        execute:
+          - gatewayscript:
+              version: 2.0.0
+              title: ParametersException
+              source: |-
+
+
+                filterHeaders();
+
+                var description = context.get("error.message");
+                var statusCode = context.message.statusCode;
+                var reason = context.message.reasonPhrase;
+
+
+                context.set('message.status.code', statusCode);
+                if (statusCode==400){
+                    context.set('message.reasonPhrase','Bad Request');
+                }else if(statusCode==409){
+                    context.set('message.reasonPhrase','Conflict');
+                }
+                const failure = {
+                    meta: context.get('ctx.meta'),
+                    status: statusCode || 400,
+                    title: reason,
+                    errors: [{
+                            code: 'SA400',
+                            detail: description
+                        }]
+                };
+
+                context.message.body.write(failure);
+
+
+                function filterHeaders() {
+                    let header_meta = require('header-metadata');
+                    header_meta.current.remove('X-Backside-Transport');
+                    header_meta.current.headers = {
+                      'Content-type': 'application/vnd.bancolombia.v4+json; charset=utf-8',
+                      'API-Version': context.get('api.version'),
+                      'Message-id': context.get('request.headers.message-id') || '',
+                      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+                      'X-Frame-Options': 'DENY',
+                      'Content-Security-Policy': 'default-src \'self\' *.bancolombia.com',
+                      'X-Content-Type-Options': 'nosniff',
+                      'Cache-Control': 'private, no-cache, no-store, max-age=0, no-transfor',
+                      Pragma: 'no-cache',
+                      Expires: '0'
+                    };
+                    context.set('header_meta', header_meta.current.headers);
+                }
+      - errors:
+          - BusinessException
+        execute:
+          - gatewayscript:
+              version: 2.0.0
+              title: BusinessException
+              source: "\r\n//homologación de códigos de http\r\nconst serverCodesHttp = {\r\n    'COMEX00003': 409, \r\n    'COMEX00006': 503,\r\n    'COMEX00007': 404,\r\n    'COMEX00001': 404,\r\n    'COMEX00002': 404,\r\n    'COMEX00005': 503,\r\n    'COMEX00004': 404,\r\n    '500': 500,\r\n    '503': 503\r\n    \r\n};\r\n\r\n\r\nvar description = context.get(\"error.message\");\r\nvar statusCode = context.get(\"statuscode\");\r\n\r\n\r\n//Se homologa el code en caso de estar identificado\r\nlet code = statusCode ? statusCode : '502';\r\n\r\n//Se homologa el code en caso de estar identificado\r\nlet codeHttps = serverCodesHttp.hasOwnProperty(statusCode) ? serverCodesHttp[statusCode] : 502;\r\n\r\ncontext.set('message.status.code', codeHttps);\r\nlet descdetail = code == 502 ? 'MENSAJE INESPERADO RECIBIDO DEL SERVIDOR' : description;\r\n\r\nlet codeException;\r\n\r\n\r\nif (code === 500) {\r\n    codeException = 'SP' + code;\r\n    context.set('message.reasonPhrase', 'Internal Server Error');\r\n} else  if (code === 503) {\r\n    codeException = 'SP' + code;\r\n    context.set('message.reasonPhrase', 'Service Unavailable');\r\n} else {codeException = 'BP' + code;}  \r\n\r\nvar reason = context.message.reasonPhrase;\r\n\r\nlet failure = {\r\n    meta: context.get('ctx.meta'),\r\n    status: codeHttps,\r\n    title: reason,\r\n    errors: [{\r\n            code: codeException,\r\n            detail: descdetail\r\n        }]\r\n};\r\n\r\ncontext.message.body.write(failure);\r\ncontext.message.header.set('Content-Type', \"application/vnd.bancolombia.v4+json\");\r\nfilterHeaders();\r\n\r\nfunction filterHeaders() {\r\n    let header_meta = require('header-metadata');\r\n    header_meta.current.remove('X-Backside-Transport');\r\n    header_meta.current.headers = {\r\n      'Content-type': 'application/vnd.bancolombia.v4+json; charset=utf-8',\r\n      'API-Version': context.get('api.version'),\r\n      'Message-id': context.get('request.headers.message-id') || '',\r\n      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',\r\n      'X-Frame-Options': 'DENY',\r\n      'Content-Security-Policy': 'default-src \\'self\\' *.bancolombia.com',\r\n      'X-Content-Type-Options': 'nosniff',\r\n      'Cache-Control': 'private, no-cache, no-store, max-age=0, no-transfor',\r\n      Pragma: 'no-cache',\r\n      Expires: '0'\r\n    };\r\n    context.set('header_meta', header_meta.current.headers);\r\n}"
+      - errors:
+          - ConnectionError
+        execute:
+          - gatewayscript:
+              version: 2.0.0
+              title: ConnectionError
+              source: >-
+
+
+
+                filterHeaders();
+
+
+                context.set('message.status.code', '504');
+
+
+                const failure = {
+                    meta: context.get('ctx.meta'),
+                    status: 504,
+                    title: context.get("error.message"),
+                    errors: [{
+                            code: 'SP504',
+                            detail: 'Tiempo de respuesta del proveedor del servicio excedido'
+                        }]
+                };
+
+
+                context.message.body.write(failure);
+
+                context.message.header.set('Content-Type',
+                "application/vnd.bancolombia.v4+json");
+
+
+                function filterHeaders() {
+                    let header_meta = require('header-metadata');
+                    header_meta.current.remove('X-Backside-Transport');
+                    header_meta.current.headers = {
+                      'Content-type': 'application/vnd.bancolombia.v4+json; charset=utf-8',
+                      'API-Version': context.get('api.version'),
+                      'Message-id': context.get('request.headers.message-id') || '',
+                      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+                      'X-Frame-Options': 'DENY',
+                      'Content-Security-Policy': 'default-src \'self\' *.bancolombia.com',
+                      'X-Content-Type-Options': 'nosniff',
+                      'Cache-Control': 'private, no-cache, no-store, max-age=0, no-transfor',
+                      Pragma: 'no-cache',
+                      Expires: '0'
+                    };
+                    context.set('header_meta', header_meta.current.headers);
+                }
+      - errors:
+          - SystemException
+        execute:
+          - gatewayscript:
+              version: 2.0.0
+              title: SystemException
+              source: >-
+
+
+
+
+                filterHeaders();
+
+
+
+                var description = context.get("error.message");
+
+                var statusCode = context.message.statusCode ?
+                context.get("error.message"):context.message.statusCode;
+
+                var reason = context.message.reasonPhrase;
+
+
+                context.set('message.status.code', statusCode);
+
+                const failure = {
+                    meta: context.get('ctx.meta'),
+                    status: statusCode || 400,
+                    title: reason,
+                    errors: [{
+                            code: 'SA400',
+                            detail: description
+                        }]
+                };
+
+
+                context.message.body.write(failure);
+
+                context.message.header.set('Content-Type',
+                "application/vnd.bancolombia.v4+json");
+
+
+                function filterHeaders() {
+                    let header_meta = require('header-metadata');
+                    header_meta.current.remove('X-Backside-Transport');
+                    header_meta.current.headers = {
+                      'Content-type': 'application/vnd.bancolombia.v4+json; charset=utf-8',
+                      'API-Version': context.get('api.version'),
+                      'Message-id': context.get('request.headers.message-id') || '',
+                      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+                      'X-Frame-Options': 'DENY',
+                      'Content-Security-Policy': 'default-src \'self\' *.bancolombia.com',
+                      'X-Content-Type-Options': 'nosniff',
+                      'Cache-Control': 'private, no-cache, no-store, max-age=0, no-transfor',
+                      Pragma: 'no-cache',
+                      Expires: '0'
+                    };
+                    context.set('header_meta', header_meta.current.headers);
+                }
+      - default:
+          - gatewayscript:
+              version: 2.0.0
+              title: DefaultException
+              source: >-
+
+
+
+                filterHeaders();
+
+
+                var description = context.get("error.message");
+
+                var statusCode = context.message.statusCode ?
+                context.get("error.message"):context.message.statusCode;
+
+                var reason = context.message.reasonPhrase;
+
+                context.set('message.status.code', statusCode);
+
+
+
+                const failure = {
+                    meta: context.get('ctx.meta'),
+                    status: statusCode || 400,
+                    title: reason,
+                    errors: [{
+                            code: 'SA400',
+                            detail: description
+                        }]
+                };
+
+
+                context.message.body.write(failure);
+
+
+                context.message.header.set('Content-Type',
+                "application/vnd.bancolombia.v4+json");
+
+
+                function filterHeaders() {
+                    let header_meta = require('header-metadata');
+                    header_meta.current.remove('X-Backside-Transport');
+                    header_meta.current.headers = {
+                      'Content-type': 'application/vnd.bancolombia.v4+json; charset=utf-8',
+                      'API-Version': context.get('api.version'),
+                      'Message-id': context.get('request.headers.message-id') || '',
+                      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+                      'X-Frame-Options': 'DENY',
+                      'Content-Security-Policy': 'default-src \'self\' *.bancolombia.com',
+                      'X-Content-Type-Options': 'nosniff',
+                      'Cache-Control': 'private, no-cache, no-store, max-age=0, no-transfor',
+                      Pragma: 'no-cache',
+                      Expires: '0'
+                    };
+                    context.set('header_meta', header_meta.current.headers);
+                }
+  activity-log:
+    enabled: true
+    success-content: activity
+    error-content: payload
+x-API-Protocol:
+  Protocols: HTTPS
