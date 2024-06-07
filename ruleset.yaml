@@ -1,5 +1,5 @@
 #Este set de reglas solo funciona para Swagger 2
-functions: [security]
+functions: [security, validateBasePath, xKeyType, validateCatalogs, validateEndpointPDN, validateProperties, validateInvoke, timeout, validateMessageId, validateDescription, validateHead, validateCodes]
 rules:
 #Validar el uso de x-ibm-comment
   x-ibm-comment-exists:
@@ -28,12 +28,12 @@ rules:
     then:
       function: pattern
       functionOptions:
-        notMatch: "console\.error"
+        notMatch: "console.error"
 
-#Validar la existencia de la etiqueta endpoint en todos los catálogos
+#Validar la existencia de la etiqueta endpoint en todos los catÃ¡logos
   endpoints-exists:
     description: "Validar que para cada catalogo exista un endpoint"
-    message: "Es necesaria la definición de un endpoint en el catalogo" 
+    message: "Es necesaria la definiciÃ³n de un endpoint en el catalogo" 
     severity: error
     given: "$.x-ibm-configuration.catalogs..properties"
     then:
@@ -52,14 +52,58 @@ rules:
       functionOptions:
         notMatch: /(?:\d{1,3}\.){3}\d{1,3}/
 
-#Validar que se tenga una definicion de seguridad
-  no-securityDefinitions:
-    description: "Todas las Apis deben contar con una definición de seguridad valida y completa"
+#Validar que se tenga una definicion de seguridad 
+  validate-security:
+    description: "Todas las operaciones deben contar con una definiciÃ³n de seguridad valida y completa"
+    severity: error
+    given: "$..security[*]"
+    then: 
+      function: security
+
+  exist-securityDefinitions:
+    description: "Todas las Apis deben contar con una definiciÃ³n de seguridad valida y completa"
+    message: "La API no cuenta con el apartado de securityDefinitions"
+    severity: error
+    given: "$"
+    then: 
+      field: "securityDefinitions"
+      function: truthy
+
+  validate-securityDefinitions:
+    description: "Todas las Apis deben contar con una definiciÃ³n de seguridad valida y completa"
     message: "{{error}}"
     severity: error
     given: "$.securityDefinitions"
     then: 
       function: security
+
+#validar x-key-type
+  validate-x-key-type:
+    description: "Validar que la propiedad 'x-key-type' estÃ¡ presente en la definiciÃ³n de seguridad."
+    given: "$.securityDefinitions[*]"
+    severity: error
+    message: "{{error}}"
+    then:
+      function: xKeyType
+
+#validar consumes y produces
+  validate-consumes:
+    description: "Validar que exista la etiqueta de consumes"
+    given: "$."
+    severity: error
+    message: "La API no cuenta con el apartado de consumes " 
+    then:
+      field: "consumes"
+      function: truthy
+    
+  validate-produces:
+    description: "Validar que exista la etiqueta de produces"
+    given: "$."
+    severity: error
+    message: "La API no cuenta con el apartado de produces " 
+    then:
+      field: "produces"
+      function: truthy
 
 #validar el uso de application/json de modo obligatorio y sin variantes en consumes
   validate-swagger-consumes:
@@ -77,6 +121,7 @@ rules:
             type: string            
             enum:
               - application/json
+              - application/vnd.bancolombia.v4+json
 
 #validar el uso de application/json de modo obligatorio y sin variantes en produces
   validate-swagger-produces:
@@ -94,6 +139,7 @@ rules:
             type: string
             enum:
               - application/json
+              - application/vnd.bancolombia.v4+json
 
 #En el meta debe ser obligatorio el _requestDateTime, _messageId y _applicationId   
   validate-meta:
@@ -116,36 +162,36 @@ rules:
 
 # validar obligatoriedad de _messageId, _requestDateTime, y _applicationId en meta de respuesta
   validate-_messageId-exists:
-    description: "Se valida que en el meta _messageId esté presente"
+    description: "Se valida que en el meta _messageId estÃ© presente"
     severity: error
-    message: "_messageId es un campo obligatorio en el meta'"
+    message: "_messageId es un campo obligatorio en el meta"
     given: "$.definitions.meta.properties"
     then:
       field: _messageId
       function: truthy
 
   validate-_requestDateTime-exists:
-    description: "Se valida que en el meta _requestDateTime esté presente"
+    description: "Se valida que en el meta _requestDateTime estÃ© presente"
     severity: error
-    message: "_requestDateTime es un campo obligatorio en el meta'"
+    message: "_requestDateTime es un campo obligatorio en el meta"
     given: "$.definitions.meta.properties"
     then:
       field: _requestDateTime
       function: truthy
 
   validate-_applicationId-exists:
-    description: "Se valida que en el meta _applicationId esté presente"
+    description: "Se valida que en el meta _applicationId estÃ© presente"
     severity: error
-    message: "_applicationId es un campo obligatorio en el meta'"
+    message: "_applicationId es un campo obligatorio en el meta"
     given: "$.definitions.meta.properties"
     then:
       field: _applicationId
       function: truthy
 
   validate-requestDateTimeFormat-exists:
-    description: "Se valida que en el meta _requestDateTime.format esté presente"
+    description: "Se valida que en el meta _requestDateTime.format estÃ© presente"
     severity: error
-    message: "_requestDateTime es un campo obligatorio en el meta'"
+    message: "El formato de _requestDateTime es un campo obligatorio en la propiedad _requestDateTime del meta"
     given: "$.definitions.meta.properties._requestDateTime"
     then:
       field: format
@@ -191,16 +237,24 @@ rules:
       field: RateLimit-Limit
       function: truthy
 
-  validate-response-Message-Id-header:
-    description: "Message-Id es un header obligatorio en la respuesta"
+  validate-response-Message-id-header:
+    description: "message-id es un header obligatorio en la respuesta"
     message: "{{description}}"
     severity: error
     given: "$.paths...responses.200.headers"
     then:
-      field: Message-Id
+      field: message-id
       function: truthy
 
-#validar en las cabeceras el uso de prefijo x- (no permitido) y separación con –
+  validate-request-Message-id-header:
+    description: "message-id es un header obligatorio en la peticion"
+    message: "{{error}}"
+    severity: error
+    given: "$.paths...parameters"
+    then:
+      function: validateMessageId
+
+#validar en las cabeceras el uso de prefijo x- (no permitido) y separaciÃ³n con â€“
   no-x-headers:
     message: 'Header `{{value}}` no debe iniciar con "X-".'
     description: "Las cabeceras no deben iniciar con x-"
@@ -211,12 +265,12 @@ rules:
       functionOptions: 
         notMatch: "^(x|X)-"
     
-#validar que los nombres de los campos del response sean alfanuméricos y que no contengan caracteres especiales, ni inicien con numero
+#validar que los nombres de los campos del response sean alfanumÃ©ricos y que no contengan caracteres especiales, ni inicien con numero
   path-response-naming-convention:
-    description: "Los campos del response deben ser alfanuméricos y no contener caracteres especiales, ni iniciar con numero"
+    description: "Los campos del response deben ser alfanumÃ©ricos y no contener caracteres especiales, ni iniciar con numero"
     given: $.definitions[*].properties.data.properties
     severity: error
-    message: "{{description}}, '{{property}}' no sigue la convención de nombres."
+    message: "{{description}}, '{{property}}' no sigue la convenciÃ³n de nombres."
     then:
       field: "@key"
       function: pattern
@@ -224,9 +278,9 @@ rules:
         match: "^[a-zA-Z][a-zA-Z0-9]*$"
 
 
-#validar estructura de definición de respuesta fallida
+#validar estructura de definiciÃ³n de respuesta fallida
   validate-error-response:
-    description: "Validar la respuesta para códigos de estado de error."
+    description: "Validar la respuesta para cÃ³digos de estado de error."
     given: "$.definitions.failure.properties"
     severity: error
     message: "La definicion de la respuesta para error no coincide con la estructura esperada (meta y errors)."
@@ -254,12 +308,11 @@ rules:
             - detail
       
 #Agregar validacion de execute: [], finally:[], otherwise:[],errors:[]",
- 
   validate-empty-execute:
-    description: "Validar que la propiedad 'execute' está presente pero vacía."
+    description: "Validar que la propiedad 'execute' estÃ¡ presente pero vacÃ­a."
     given: "$..execute"
     severity: error
-    message: "La propiedad 'execute' debe estar presente pero vacía."
+    message: "La propiedad 'execute' debe estar presente pero no vacÃ­a."
     then:
       field: "@key"
       function: truthy
@@ -273,20 +326,135 @@ rules:
       function: falsy
   
   validate-empty-otherwise:
-    description: "Validar que la propiedad 'otherwise' está presente pero vacía."
+    description: "Validar que la propiedad 'otherwise' estÃ¡ presente pero no vacÃ­a."
     given: "$..otherwise"
     severity: error
-    message: "La propiedad 'otherwise' debe estar presente pero vacía."
+    message: "La propiedad 'otherwise' debe estar presente pero no vacÃ­a."
     then:
       field: "@key"
       function: truthy
   
   validate-empty-errors:
-    description: "Validar que la propiedad 'errors' está presente pero vacía."
+    description: "Validar que la propiedad 'errors' estÃ¡ presente pero vacÃ­a."
     given: "$..errors"
     severity: error
-    message: "La propiedad 'errors' debe estar presente pero vacía."
+    message: "La propiedad 'errors' debe estar presente pero vacÃ­a."
     then:
       field: "@key"
       function: truthy
       
+#validar version
+  validate-version:
+    description: "Validar el estandar de la version de API"
+    given: "$.info.version"
+    severity: error
+    message: "La versiÃ³n {{value}} de API no cumple con el estandar"
+    then:
+      function: pattern
+      functionOptions:
+        match: /^[0-9]?[0-9]?[0-9][.][0-9]?[0-9]?[0-9][.][0-9]?[0-9]?[0-9]$/
+
+#validar nombre de producto
+  validate-ibm-name:
+    description: "Validar el estandar del nombre de API"
+    given: "$.info.x-ibm-name"
+    severity: error
+    message: "El nombre: {{value}} no cumple con el estandar. El nombre debe estar sÃ³lo en minÃºscula y palabras separadas por guiÃ³n medio"
+    then:
+      function: pattern
+      functionOptions:
+        match: /^[a-z\-]*$/
+
+#validar version del base path
+  validate-basePath:
+    description: "La version del BasePath debe coincidir con la version de API"
+    message: "{{error}}"
+    severity: error
+    given: "$."
+    then: 
+      function: validateBasePath
+
+#validar existencia de catalogos y validacion de TLS-Profile 
+  validate-catalogs:
+    description: "se valida la existencia de los catalogos development, sb, testing, production y que el tls profile coincida con el hostname"
+    message: "{{error}}"
+    severity: error
+    given: "$.x-ibm-configuration.catalogs"
+    then: 
+      function: validateCatalogs
+
+#validar la existencia de las propiedades definidas en cada ambiente
+  validate-properties:
+    description: "se valida la existencia de las propiedades definidas en cada ambiente"
+    message: "{{error}}"
+    severity: error
+    given: "$.x-ibm-configuration"
+    then: 
+      function: validateProperties  
+
+#validar endpoint en PDN
+  validate-endpointPDN:
+    description: "se valida que el endpoint de PDN no contenga dev, qa ni cert"
+    message: "{{error}}"
+    severity: error
+    given: "$.x-ibm-configuration.catalogs"
+    then: 
+      function: validateEndpointPDN
+
+#Validar propiedades de los invoke
+  validate-invokes:
+    description: "se valida que los invoke tengan timeout, TLS profile, stop-on-error y target-url"
+    message: "{{error}}"
+    severity: error
+    given: "$.x-ibm-configuration.assembly.execute..invoke"
+    then: 
+      function: validateInvoke
+
+#Validar timeout del invoke
+  validate-timeout:
+    description: "se valida que el timeout sea inferior a 7 "
+    message: "El valor de timeout en los invoke no deberÃ­a ser mayor que 7. Valor encontrado {{value}}"
+    severity: warn
+    given: "$.x-ibm-configuration.assembly.execute..invoke.timeout"
+    then: 
+      function: timeout
+
+#Validar delimitacion funcional
+  validate-functional-delimitation:
+    description: "Se valida que todas las operaciones contengan descripcion y delimitacion funcional"
+    message: "{{error}}"
+    severity: error
+    given: "$.paths.*"
+    then: 
+      function: validateDescription
+
+#Validar existencia de metodo HEAD
+  validate-head-method:
+    description: "Se valida que exista la definiciÃ³n de una operacion HEAD de monitoreo"
+    message: "La API no contiene un metodo /health"
+    severity: error
+    given: "$.paths"
+    then: 
+      function: validateHead
+
+#Validar que no exista libreria APIM
+  validate-head-method:
+    description: "Se valida que no se use la libreria APIM"
+    message: "La API hace uso de la libreria APIM"
+    severity: error
+    given: "$..*"
+    then: 
+      function: pattern
+      functionOptions:
+        notMatch: "apim\."
+
+#Validar codigos de respuesta
+  validate-response-codes:
+    description: "Se valida que los codigos de respuesta definidos seas los permitidos por el estandar"
+    message: "{{error}}"
+    severity: error
+    given: "$.paths..responses"
+    then: 
+      function: validateCodes
+      
+        
