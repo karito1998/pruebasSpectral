@@ -30,10 +30,10 @@ rules:
       functionOptions:
         notMatch: "console.error"
 
-#Validar la existencia de la etiqueta endpoint en todos los catÃ¡logos
+#Validar la existencia de la etiqueta endpoint en todos los catálogos
   endpoints-exists:
     description: "Validar que para cada catalogo exista un endpoint"
-    message: "Es necesaria la definiciÃ³n de un endpoint en el catalogo" 
+    message: "Es necesaria la definición de un endpoint en el catalogo" 
     severity: error
     given: "$.x-ibm-configuration.catalogs..properties"
     then:
@@ -54,14 +54,14 @@ rules:
 
 #Validar que se tenga una definicion de seguridad 
   validate-security:
-    description: "Todas las operaciones deben contar con una definiciÃ³n de seguridad valida y completa"
+    description: "Todas las operaciones deben contar con una definición de seguridad valida y completa"
     severity: error
     given: "$..security[*]"
     then: 
       function: security
 
   exist-securityDefinitions:
-    description: "Todas las Apis deben contar con una definiciÃ³n de seguridad valida y completa"
+    description: "Todas las Apis deben contar con una definición de seguridad valida y completa"
     message: "La API no cuenta con el apartado de securityDefinitions"
     severity: error
     given: "$"
@@ -70,7 +70,7 @@ rules:
       function: truthy
 
   validate-securityDefinitions:
-    description: "Todas las Apis deben contar con una definiciÃ³n de seguridad valida y completa"
+    description: "Todas las Apis deben contar con una definición de seguridad valida y completa"
     message: "{{error}}"
     severity: error
     given: "$.securityDefinitions"
@@ -79,7 +79,7 @@ rules:
 
 #validar x-key-type
   validate-x-key-type:
-    description: "Validar que la propiedad 'x-key-type' estÃ¡ presente en la definiciÃ³n de seguridad."
+    description: "Validar que la propiedad 'x-key-type' está presente en la definición de seguridad."
     given: "$.securityDefinitions[*]"
     severity: error
     message: "{{error}}"
@@ -162,7 +162,7 @@ rules:
 
 # validar obligatoriedad de _messageId, _requestDateTime, y _applicationId en meta de respuesta
   validate-_messageId-exists:
-    description: "Se valida que en el meta _messageId estÃ© presente"
+    description: "Se valida que en el meta _messageId esté presente"
     severity: error
     message: "_messageId es un campo obligatorio en el meta"
     given: "$.definitions.meta.properties"
@@ -171,7 +171,7 @@ rules:
       function: truthy
 
   validate-_requestDateTime-exists:
-    description: "Se valida que en el meta _requestDateTime estÃ© presente"
+    description: "Se valida que en el meta _requestDateTime esté presente"
     severity: error
     message: "_requestDateTime es un campo obligatorio en el meta"
     given: "$.definitions.meta.properties"
@@ -180,7 +180,7 @@ rules:
       function: truthy
 
   validate-_applicationId-exists:
-    description: "Se valida que en el meta _applicationId estÃ© presente"
+    description: "Se valida que en el meta _applicationId esté presente"
     severity: error
     message: "_applicationId es un campo obligatorio en el meta"
     given: "$.definitions.meta.properties"
@@ -189,7 +189,7 @@ rules:
       function: truthy
 
   validate-requestDateTimeFormat-exists:
-    description: "Se valida que en el meta _requestDateTime.format estÃ© presente"
+    description: "Se valida que en el meta _requestDateTime.format esté presente"
     severity: error
     message: "El formato de _requestDateTime es un campo obligatorio en la propiedad _requestDateTime del meta"
     given: "$.definitions.meta.properties._requestDateTime"
@@ -254,7 +254,7 @@ rules:
     then:
       function: validateMessageId
 
-#validar en las cabeceras el uso de prefijo x- (no permitido) y separaciÃ³n con â€“
+#validar en las cabeceras el uso de prefijo x- (no permitido) y separación con –
   no-x-headers:
     message: 'Header `{{value}}` no debe iniciar con "X-".'
     description: "Las cabeceras no deben iniciar con x-"
@@ -265,12 +265,12 @@ rules:
       functionOptions: 
         notMatch: "^(x|X)-"
     
-#validar que los nombres de los campos del response sean alfanumÃ©ricos y que no contengan caracteres especiales, ni inicien con numero
+#validar que los nombres de los campos del response sean alfanuméricos y que no contengan caracteres especiales, ni inicien con numero
   path-response-naming-convention:
-    description: "Los campos del response deben ser alfanumÃ©ricos y no contener caracteres especiales, ni iniciar con numero"
+    description: "Los campos del response deben ser alfanuméricos y no contener caracteres especiales, ni iniciar con numero"
     given: $.definitions[*].properties.data.properties
     severity: error
-    message: "{{description}}, '{{property}}' no sigue la convenciÃ³n de nombres."
+    message: "{{description}}, '{{property}}' no sigue la convención de nombres."
     then:
       field: "@key"
       function: pattern
@@ -278,9 +278,9 @@ rules:
         match: "^[a-zA-Z][a-zA-Z0-9]*$"
 
 
-#validar estructura de definiciÃ³n de respuesta fallida
+#validar estructura de definición de respuesta fallida
   validate-error-response:
-    description: "Validar la respuesta para cÃ³digos de estado de error."
+    description: "Validar la respuesta para códigos de estado de error."
     given: "$.definitions.failure.properties"
     severity: error
     message: "La definicion de la respuesta para error no coincide con la estructura esperada (meta y errors)."
@@ -309,36 +309,36 @@ rules:
       
 #Agregar validacion de execute: [], finally:[], otherwise:[],errors:[]",
   validate-empty-execute:
-    description: "Validar que la propiedad 'execute' estÃ¡ presente pero vacÃ­a."
+    description: "Validar que la propiedad 'execute' está presente pero vacía."
     given: "$..execute"
     severity: error
-    message: "La propiedad 'execute' debe estar presente pero no vacÃ­a."
+    message: "La propiedad 'execute' debe estar presente pero no vacía."
     then:
       field: "@key"
       function: truthy
       
   validate-empty-finally:
-    description: "Validar que la propiedad 'finally' no debe estar presente."
+    description: "Validar que si la propiedad 'finally' esta presente, no esté vacía."
     given: "$..finally"
-    severity: warn
-    message: "La propiedad 'finally' no debe estar presente."
+    severity: error
+    message: "La propiedad 'finally' es opcional, si se usa no debe estar vacía."
     then:
       function: falsy
   
   validate-empty-otherwise:
-    description: "Validar que la propiedad 'otherwise' estÃ¡ presente pero no vacÃ­a."
+    description: "Validar que la propiedad 'otherwise' está presente pero no vacía."
     given: "$..otherwise"
     severity: error
-    message: "La propiedad 'otherwise' debe estar presente pero no vacÃ­a."
+    message: "La propiedad 'otherwise' debe estar presente pero no vacía."
     then:
       field: "@key"
       function: truthy
   
   validate-empty-errors:
-    description: "Validar que la propiedad 'errors' estÃ¡ presente pero vacÃ­a."
+    description: "Validar que la propiedad 'errors' está presente pero vacía."
     given: "$..errors"
     severity: error
-    message: "La propiedad 'errors' debe estar presente pero vacÃ­a."
+    message: "La propiedad 'errors' debe estar presente pero vacía."
     then:
       field: "@key"
       function: truthy
@@ -348,7 +348,7 @@ rules:
     description: "Validar el estandar de la version de API"
     given: "$.info.version"
     severity: error
-    message: "La versiÃ³n {{value}} de API no cumple con el estandar"
+    message: "La versión {{value}} de API no cumple con el estandar"
     then:
       function: pattern
       functionOptions:
@@ -359,7 +359,7 @@ rules:
     description: "Validar el estandar del nombre de API"
     given: "$.info.x-ibm-name"
     severity: error
-    message: "El nombre: {{value}} no cumple con el estandar. El nombre debe estar sÃ³lo en minÃºscula y palabras separadas por guiÃ³n medio"
+    message: "El nombre: {{value}} no cumple con el estandar. El nombre debe estar sólo en minúscula y palabras separadas por guión medio"
     then:
       function: pattern
       functionOptions:
@@ -413,7 +413,7 @@ rules:
 #Validar timeout del invoke
   validate-timeout:
     description: "se valida que el timeout sea inferior a 7 "
-    message: "El valor de timeout en los invoke no deberÃ­a ser mayor que 7. Valor encontrado {{value}}"
+    message: "El valor de timeout en los invoke no debería ser mayor que 7. Valor encontrado {{value}}"
     severity: warn
     given: "$.x-ibm-configuration.assembly.execute..invoke.timeout"
     then: 
@@ -430,7 +430,7 @@ rules:
 
 #Validar existencia de metodo HEAD
   validate-head-method:
-    description: "Se valida que exista la definiciÃ³n de una operacion HEAD de monitoreo"
+    description: "Se valida que exista la definición de una operacion HEAD de monitoreo"
     message: "La API no contiene un metodo /health"
     severity: error
     given: "$.paths"
